@@ -6,7 +6,12 @@ const authRouter = require("./middleware/auth");
 const userRouter = require("./routes/users");
 const postRouter = require("./routes/posts");
 const categoryRouter = require("./routes/catgories");
+const multer = require("multer");
+const path = require("path");
+
 dotenv.config();
+app.use(express.json());
+app.use("/images", express.static(path.join(__dirname, "/images")));
 
 mongoose
   .connect(process.env.MONGODB_URL, {
@@ -16,6 +21,20 @@ mongoose
   .catch((err) => {
     console.log("connecting problem Error: ", err);
   });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, req.body.name);
+  },
+});
+
+const upload = multer({ storage: storage });
+app.post("/api/upload", upload.single("file"), (req, res) => {
+  res.status(200).json("File has been uploaded");
+});
 
 app.use(express.json());
 app.use(authRouter);
