@@ -3,7 +3,9 @@ const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRouter = require("./middleware/auth");
-const userRouter = require('./routes/users');
+const userRouter = require("./routes/users");
+const postRouter = require("./routes/posts");
+const categoryRouter = require("./routes/catgories");
 dotenv.config();
 
 mongoose
@@ -18,6 +20,8 @@ mongoose
 app.use(express.json());
 app.use(authRouter);
 app.use(userRouter);
+app.use("/api/posts", postRouter);
+app.use("/api/categories", categoryRouter);
 
 app.listen(3000, () => {
   console.log("Server is up and running");
